@@ -45,7 +45,9 @@ function collision() {
 function fixPiece() {
   current.shape.forEach((row, y) => {
     row.forEach((val, x) => {
-      if (val) board[current.y + y][current.x + x] = 1;
+      if (val) {
+        board[current.y + y][current.x + x] = 1;
+      }
     });
   });
 }
@@ -67,37 +69,27 @@ function spawn() {
   };
 }
 
-// 落下処理
-function update() {
-  current.y++;
-  if (collision()) {
-    current.y--;
-    fixPiece();
-    clearLines();
-    spawn();
-  }
-}
+
 
 // キー操作
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowLeft') current.x--;
-  if (e.key === 'ArrowRight') current.x++;
-  if (e.key === 'ArrowDown') current.y++;
-  // Shiftキーで回転
-  if (e.key === 'Shift') {
-    current.shape = rotate(current.shape);
-  }
+let leftPressed = false;
+let rightPressed = false;
+let downPressed = false;
 
-  // ↑キーでも回転したいならこれ
-  if (e.key === 'ArrowUp') {
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') leftPressed = true;
+  if (e.key === 'ArrowRight') rightPressed = true;
+  if (e.key === 'ArrowDown') downPressed = true;
+
+  if (e.key === 'Shift' || e.key === 'ArrowUp') {
     current.shape = rotate(current.shape);
   }
-  if (collision()) {
-    if (e.key === 'ArrowLeft') current.x++;
-    if (e.key === 'ArrowRight') current.x--;
-    if (e.key === 'ArrowDown') current.y--;
-  }
-  
+});
+
+document.addEventListener('keyup', e => {
+  if (e.key === 'ArrowLeft') leftPressed = false;
+  if (e.key === 'ArrowRight') rightPressed = false;
+  if (e.key === 'ArrowDown') downPressed = false;
 });
 
 // ゲームループ
@@ -106,6 +98,7 @@ setInterval(() => {
   render(ctx, board, current, BLOCK);
 }, 500);
 
+// 落下処理
 function rotate(shape) {
   const N = shape.length;
   const M = shape[0].length;
@@ -118,4 +111,27 @@ function rotate(shape) {
   }
   return rotated;
 }
+
+function gameLoop() {
+  // 横移動（整数）
+  if (leftPressed) {
+    current.x -= 1;
+    if (collision()) current.x += 1;
+  }
+  if (rightPressed) {
+    current.x += 1;
+    if (collision()) current.x -= 1;
+  }
+
+  // 下移動（整数）
+  if (downPressed) {
+    current.y += 1;
+    if (collision()) current.y -= 1;
+  }
+
+  render(ctx, board, current, BLOCK);
+  requestAnimationFrame(gameLoop);
+}
+
+requestAnimationFrame(gameLoop);
 
