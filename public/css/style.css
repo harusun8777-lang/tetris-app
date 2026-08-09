@@ -2,10 +2,22 @@ body {
   background: #222;
   display: flex;
   justify-content: center;
-  padding-top: 30px;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.game-container {
+  display: flex;
+  flex-direction: column; /* ← 縦に並べる */
+  align-items: center;     /* ← 中央寄せ */
+  gap: 20px;               /* ← キャンバスとボタンの間隔 */
 }
 
 canvas {
   background: #000;
   border: 2px solid #fff;
+}
+.score{
+  color:#fff;
 }

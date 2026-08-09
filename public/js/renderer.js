@@ -11,6 +11,9 @@ function render(ctx, board, current, BLOCK) {
     });
   });
 
+  // ★ ゴーストを描く
+  renderGhost(ctx, current, BLOCK);
+
   // current piece（落下中のブロック）
   current.shape.forEach((row, y) => {
     row.forEach((val, x) => {
@@ -18,11 +21,29 @@ function render(ctx, board, current, BLOCK) {
         let px = current.x + x;
         let py = current.y + y;
 
-        // 枠内だけ
         if (px >= 0 && px < COLS && py >= 0 && py < ROWS) {
           ctx.fillStyle = '#f0f';
           ctx.fillRect(px * BLOCK, py * BLOCK, BLOCK, BLOCK);
         }
+      }
+    });
+  });
+}
+
+function renderGhost(ctx, current, BLOCK) {
+  const ghostY = getGhostPosition();
+
+  ctx.fillStyle = "rgba(255,255,255,0.3)";
+
+  current.shape.forEach((row, y) => {
+    row.forEach((val, x) => {
+      if (val) {
+        ctx.fillRect(
+          (current.x + x) * BLOCK,
+          (ghostY + y) * BLOCK,
+          BLOCK,
+          BLOCK
+        );
       }
     });
   });
