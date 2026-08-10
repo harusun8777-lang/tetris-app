@@ -1,261 +1,176 @@
-const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
+const ROWS = 20;
+const COLS = 10;
+const BLOCK = 30;
+const SCORE_TABLE = [0, 100, 300, 500, 800];
 
-const ROWS = 30;
-const COLS = 15;
-const BLOCK = 20;
-let score=0;
-let lines=0;
-let level=0;
-
-// 盤面（20×10）
-let board = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
-
-// テトリミノの形
 const TETROMINOS = {
   I: [[1, 1, 1, 1]],
   O: [[1, 1], [1, 1]],
   T: [[0, 1, 0], [1, 1, 1]],
   L: [[1, 0], [1, 0], [1, 1]],
+  J: [[0, 1, 0], [0, 1, 0], [1, 1, 0]],
+  S: [[0, 1, 1], [1, 1, 0]],
+  Z: [[1, 1, 0], [0, 1, 1]],
 };
+// 
+function createBoard() {
+  return Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+}
 
-// 現在のブロック
-let current = {
-  shape: TETROMINOS.T,
-  x: 3,
-  y: 0
-};
+function randomPiece() {
+  const keys = Object.keys(TETROMINOS);
+  const key = keys[Math.floor(Math.random() * keys.length)];
+  return {
+    type: key,
+    shape: TETROMINOS[key].map((row) => row.slice()),
+    x: 3,
+    y: 0,
+  };
+}
 
-// 衝突判定
-function collision() {
-  for (let y = 0; y < current.shape.length; y++) {
-    for (let x = 0; x < current.shape[y].length; x++) {
-      if (current.shape[y][x]) {
-        let nx = current.x + x;
-        let ny = current.y + y;
+function createPlayer({ canvasId, scoreId, controls }) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
 
-        if (ny >= ROWS || nx < 0 || nx >= COLS || board[ny][nx]) {
-          return true;
-        }
+  return {
+    canvas,
+    ctx,
+    scoreId,
+    controls,
+    board: createBoard(),
+    current: randomPiece(),
+    score: 0,
+    lines: 0,   
+    dropInterval: 500,
+    dropCounter: 0,
+    moveCooldown: 0,
+    moveInterval: 120,
+    downCooldown: 0,
+    downInterval: 50,
+    pressed: { left: false, right: false, down: false },
+    isGameOver: false,
+  };
+}
+
+function collisionAt(player, piece, offsetX = piece.x, offsetY = piece.y, shape = piece.shape) {
+  for (let y = 0; y < shape.length; y++) {
+    for (let x = 0; x < shape[y].length; x++) {
+      if (!shape[y][x]) continue;
+
+      const nextX = offsetX + x;
+      const nextY = offsetY + y;
+
+      if ( nextX < 0 || nextX >= COLS || (nextY >= 0 && player.board[nextY][nextX])) {
+        return true;
       }
     }
   }
   return false;
 }
 
-// ブロックを盤面に固定
-function fixPiece() {
-  current.shape.forEach((row, y) => {
-    row.forEach((val, x) => {
-      if (val) {
-        board[current.y + y][current.x + x] = 1;
+function rotateShape(shape) {
+  const rows = shape.length;
+  const cols = shape[0].length;
+  const rotated = Array.from({ length: cols }, () => Array(rows).fill(0));
+
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      rotated[x][rows - y - 1] = shape[y][x];
+    }
+  }
+
+  return rotated;
+}
+
+function spawnPiece(player) {
+  player.current = randomPiece();
+  if (collisionAt(player, player.current)) {
+    player.isGameOver = true;
+  }
+}
+
+function mergePiece(player) {
+  player.current.shape.forEach((row, y) => {
+    row.forEach((value, x) => {
+      if (!value) return;
+
+      const px = player.current.x + x;
+      const py = player.current.y + y;
+
+      if (py >= 0 && py < ROWS && px >= 0 && px < COLS) {
+        player.board[py][px] = 1;
       }
     });
   });
 }
 
-// ライン消去
-function clearLines() {
-// 全部埋まった行だけ消す
-  board = board.filter(row => {
-    if (row.every(v => v === 1)) {
-      cleared++;
-      return false; // この行を消す
+function addGarbage(target, count) {
+  for (let i = 0; i < count; i++) {
+    const row = Array(COLS).fill(1);
+    const hole = Math.floor(Math.random() * COLS);
+    row[hole] = 0;
+
+    target.board.push(row);
+    if (target.board.length > ROWS) {
+      target.board.shift();
     }
-    return true; // この行は残す
+  }
+}
+
+function clearLines(player) {
+  let cleared = 0;
+
+  player.board = player.board.filter((row) => {
+    if (row.every((value) => value === 1)) {
+      cleared++;
+      return false;
+    }
+    return true;
   });
 
-  // 足りない行を上に追加
-  while (board.length < ROWS) {
-    board.unshift(Array(COLS).fill(0));
-  } 
-  if(cleard>0){
-    score(cleared);
-    updateScore();
+  while (player.board.length < ROWS) {
+    player.board.unshift(Array(COLS).fill(0));
   }
-}  
 
-let isGameOver = false;
-// 新しいブロックを出す
-function spawn() {
-  const keys = Object.keys(TETROMINOS);
-  const key = keys[Math.floor(Math.random() * keys.length)];
-  current = {
-    shape: TETROMINOS[key],
-    x: 3,
-    y: 0
-  };
-  if (collision()) {
-    isGameOver = true;
+  if (cleared > 0) {
+    player.lines += cleared;
+    player.level = Math.floor(player.lines / 10);
+    player.score += SCORE_TABLE[cleared] * (player.level + 1);
+    updateScore(player.scoreId, player.score);
+
+    const opponent = player === players[0] ? players[1] : players[0];
+    addGarbage(opponent, cleared);
   }
 }
 
-// キー操作
-let leftPressed = false;
-let rightPressed = false;
-let downPressed = false;
+function tryRotate(player) {
+  const rotated = rotateShape(player.current.shape);
+  const oldShape = player.current.shape;
+  player.current.shape = rotated;
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowLeft') leftPressed = true;
-  if (e.key === 'ArrowRight') rightPressed = true;
-  if (e.key === 'ArrowDown') downPressed = true;
-
-  if (e.key === 'Shift' || e.key === 'ArrowUp') {
-    tryRotate();
-  }
-});
-
-document.addEventListener('keyup', e => {
-  if (e.key === 'ArrowLeft') leftPressed = false;
-  if (e.key === 'ArrowRight') rightPressed = false;
-  if (e.key === 'ArrowDown') downPressed = false;
-});
-
-let isRunning = false;
-let isPaused = false;
-document.getElementById("startBtn").addEventListener("click", () => {
-  startGame();
-});
-// ゲームスタート
-function startGame() {
-  isRunning = true;
-  isGameOver = false;
-  isPaused = false;
-
-  board = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
-  spawn();
-
-  lastTime = 0;
-  dropCounter = 0;
-
-  requestAnimationFrame(gameLoop);
-}
-
-
-// 落下処理
-function rotate(shape) {
-  const N = shape.length;
-  const M = shape[0].length;
-  let rotated = Array.from({ length: M }, () => Array(N).fill(0));
-
-  for (let y = 0; y < N; y++) {
-    for (let x = 0; x < M; x++) {
-      rotated[x][N - y - 1] = shape[y][x];
-    }
-  }
-  return rotated;
-}
-
-let lastTime = 0;
-let dropCounter = 0;
-let dropInterval = 200;
-let moveCooldown = 0;
-let moveInterval = 100;
-let downCooldown = 0;
-let downInterval = 75;
-
-function gameLoop(time = 0) {
-  if (isPaused || isGameOver) {
-    renderGameOver();   // ← ゲームオーバー画面を描く
-    requestAnimationFrame(gameLoop);
-    isRunning = false;
-    return;
-  }
-  const delta = time - lastTime;
-  lastTime = time;
-  moveCooldown -= delta;
-  dropCounter += delta;
-
-  if (dropCounter > dropInterval) {
-    current.y++;
-    if (collision()) {
-      current.y--;
-      fixPiece();
-      clearLines();
-      spawn();
-    }
-    dropCounter = 0;
-  }
-
-  // 左右移動
-  if (leftPressed && moveCooldown <= 0) {
-    current.x--;
-    if (collision()) current.x++;
-    moveCooldown = moveInterval;
-  }
-
-  if (rightPressed && moveCooldown <= 0) {
-    current.x++;
-    if (collision()) current.x--;
-    moveCooldown = moveInterval;
-  }
-
-  // 下押し（ソフトドロップ）
-  downCooldown -= delta;
-
-  if (downPressed && downCooldown <= 0) {
-    current.y++;
-    if (collision()) {
-      current.y--;
-      fixPiece();
-      clearLines();
-      spawn();
-    }
-    downCooldown = downInterval; // ← 次に落ちるまでの時間
-  }
-  render(ctx, board, current, BLOCK);
-  requestAnimationFrame(gameLoop);
-}
-
-function tryRotate() {
-  const rotated = rotate(current.shape);
-
-  // まず回転してみる
-  const oldShape = current.shape;
-  current.shape = rotated;
-
-  // 衝突したら壁蹴りを試す
-  if (collision()) {
-    // 右にずらす
-    current.x++;
-    if (collision()) {
-      // 左にずらす
-      current.x -= 2;
-      if (collision()) {
-        // どっちもダメなら回転を戻す
-        current.x++;
-        current.shape = oldShape;
+  if (collisionAt(player, player.current)) {
+    player.current.x += 1;
+    if (collisionAt(player, player.current)) {
+      player.current.x -= 2;
+      if (collisionAt(player, player.current)) {
+        player.current.x += 1;
+        player.current.shape = oldShape;
       }
     }
   }
 }
-//シャドウ
-function renderGameOver() {
-  ctx.fillStyle = "rgba(0,0,0,0.7)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = "#fff";
-  ctx.font = "40px sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
-
-  ctx.font = "20px sans-serif";
-  ctx.fillText("スタートで再開", canvas.width / 2, canvas.height / 2 + 40);
-}
-
-function getGhostPosition() {
-  // current のコピーを作る（本体を絶対に触らない）
-  let ghost = {
-    shape: current.shape,
-    x: current.x,
-    y: current.y
+function getGhostY(player) {
+  const ghost = {
+    x: player.current.x,
+    y: player.current.y,
+    shape: player.current.shape,
   };
 
-  // 下に落ちるだけ落とす
   while (true) {
-    ghost.y++;
-    if (collisionGhost(ghost)) {
-      ghost.y--;
+    ghost.y += 1;
+    if (collisionAt(player, ghost, ghost.x, ghost.y, ghost.shape)) {
+      ghost.y -= 1;
       break;
     }
   }
@@ -263,33 +178,178 @@ function getGhostPosition() {
   return ghost.y;
 }
 
-function collisionGhost(piece) {
-  for (let y = 0; y < piece.shape.length; y++) {
-    for (let x = 0; x < piece.shape[y].length; x++) {
-      if (piece.shape[y][x]) {
-        let nx = piece.x + x;
-        let ny = piece.y + y;
+function renderPlayer(player) {
+  const { ctx } = player;
+  ctx.clearRect(0, 0, player.canvas.width, player.canvas.height);
 
-        if (ny >= ROWS || nx < 0 || nx >= COLS || board[ny][nx]) {
-          return true;
-        }
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLS; x++) {
+      if (player.board[y][x]) {
+        ctx.fillStyle = '#00e5ff';
+        ctx.fillRect(x * BLOCK, y * BLOCK, BLOCK, BLOCK);
       }
     }
   }
-  return false;
+
+  const ghostY = getGhostY(player);
+  ctx.fillStyle = 'rgba(255,255,255,0.2)';
+  player.current.shape.forEach((row, y) => {
+    row.forEach((value, x) => {
+      if (value) {
+        ctx.fillRect((player.current.x + x) * BLOCK, (ghostY + y) * BLOCK, BLOCK, BLOCK);
+      }
+    });
+  });
+
+  player.current.shape.forEach((row, y) => {
+    row.forEach((value, x) => {
+      if (!value) return;
+
+      const px = player.current.x + x;
+      const py = player.current.y + y;
+
+      if (px >= 0 && px < COLS && py >= 0 && py < ROWS) {
+        ctx.fillStyle = '#ff4fd8';
+        ctx.fillRect(px * BLOCK, py * BLOCK, BLOCK, BLOCK);
+      }
+    });
+  });
+
+  if (player.isGameOver) {
+    ctx.fillStyle = 'rgba(0,0,0,0.65)';
+    ctx.fillRect(0, 0, player.canvas.width, player.canvas.height);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 26px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('GAME OVER', player.canvas.width / 2, player.canvas.height / 2);
+  }
 }
-function score(boder){
-  lines+=boder;
-  level=Math.floor(lines/10);
-  const base = [0, 100, 300, 500, 800];
-  score += base[boder]*(level+1);
+
+function updateScore(id, value) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.textContent = 'Score: ' + value;
+  }
 }
 
-function updateScore() {
-  document.getElementById("score").textContent = "Score: " + score;
+function updatePlayer(player, delta) {
+  if (player.isGameOver) return;
+
+  player.moveCooldown -= delta;
+  player.downCooldown -= delta;
+  player.dropCounter += delta;
+
+  if (player.pressed.left && player.moveCooldown <= 0) {
+    player.current.x -= 1;
+    if (collisionAt(player, player.current)) player.current.x += 1;
+    player.moveCooldown = player.moveInterval;
+  }
+
+  if (player.pressed.right && player.moveCooldown <= 0) {
+    player.current.x += 1;
+    if (collisionAt(player, player.current)) player.current.x -= 1;
+    player.moveCooldown = player.moveInterval;
+  }
+
+  if (player.pressed.down && player.downCooldown <= 0) {
+    player.current.y += 1;
+    if (collisionAt(player, player.current)) {
+      player.current.y -= 1;
+      mergePiece(player);
+      clearLines(player);
+      spawnPiece(player);
+    }
+    player.downCooldown = player.downInterval;
+  }
+
+  if (player.dropCounter >= player.dropInterval) {
+    player.current.y += 1;
+    if (collisionAt(player, player.current)) {
+      player.current.y -= 1;
+      mergePiece(player);
+      clearLines(player);
+      spawnPiece(player);
+    }
+    player.dropCounter = 0;
+  }
 }
 
+function bindControls(player) {
+  document.addEventListener('keydown', (event) => {
+    const key = event.key;
+    const lowerKey = key.toLowerCase();
 
+    if (key === player.controls.left || lowerKey === player.controls.left) player.pressed.left = true;
+    if (key === player.controls.right || lowerKey === player.controls.right) player.pressed.right = true;
+    if (key === player.controls.down || lowerKey === player.controls.down) player.pressed.down = true;
+    if (key === player.controls.rotate || lowerKey === player.controls.rotate) tryRotate(player);
+  });
 
+  document.addEventListener('keyup', (event) => {
+    const key = event.key;
+    const lowerKey = key.toLowerCase();
 
+    if (key === player.controls.left || lowerKey === player.controls.left) player.pressed.left = false;
+    if (key === player.controls.right || lowerKey === player.controls.right) player.pressed.right = false;
+    if (key === player.controls.down || lowerKey === player.controls.down) player.pressed.down = false;
+  });
+}
 
+const players = [
+  createPlayer({
+    canvasId: 'game1',
+    scoreId: 'score1',
+    controls: { left: 'ArrowLeft', right: 'ArrowRight', down: 'ArrowDown', rotate: 'ArrowUp' },
+  }),
+  createPlayer({
+    canvasId: 'game2',
+    scoreId: 'score2',
+    controls: { left: 'a', right: 'd', down: 's', rotate: 'w' },
+  }),
+];
+
+const state = {
+  lastTime: 0,
+  rafId: null,
+};
+
+function startGame() {
+  players.forEach((player) => {
+    player.board = createBoard();
+    player.current = randomPiece();
+    player.score = 0;
+    player.lines = 0;
+    player.level = 0;
+    player.dropCounter = 0;
+    player.moveCooldown = 0;
+    player.downCooldown = 0;
+    player.dropInterval = 500;
+    player.isGameOver = false;
+    player.pressed = { left: false, right: false, down: false };
+    updateScore(player.scoreId, player.score);
+  });
+
+  if (state.rafId) {
+    cancelAnimationFrame(state.rafId);
+  }
+
+  state.lastTime = 0;
+  state.rafId = requestAnimationFrame(gameLoop);
+}
+
+function gameLoop(time = 0) {
+  const delta = state.lastTime ? time - state.lastTime : 16;
+  state.lastTime = time;
+
+  players.forEach((player) => updatePlayer(player, delta));
+  players.forEach(renderPlayer);
+
+  state.rafId = requestAnimationFrame(gameLoop);
+}
+
+document.getElementById('startBtn').addEventListener('click', startGame);
+players.forEach(bindControls);
+players.forEach((player) => {
+  updateScore(player.scoreId, player.score);
+  renderPlayer(player);
+});

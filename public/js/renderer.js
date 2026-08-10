@@ -11,7 +11,7 @@ function render(ctx, board, current, BLOCK) {
     });
   });
 
-  // ★ ゴーストを描く
+  // ゴーストを描く
   renderGhost(ctx, current, BLOCK);
 
   // current piece（落下中のブロック）

@@ -1,18 +1,25 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Tetris Battle</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <div class="match">
+      <div class="game-panel">
+        <div class="score" id="score1">Score: 0</div>
+        <canvas id="game1" width="300" height="600"></canvas>
+      </div>
 
-<head>
-  <meta charset="UTF-8">
-  <title>Tetris</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<div>
-  <div class="game-container">
-    <div  class ="score" id="score">Score: 0</div>
-    <canvas id="game" width="300" height="600"></canvas>
+      <div class="game-panel">
+        <div class="score" id="score2">Score: 0</div>
+        <canvas id="game2" width="300" height="600"></canvas>
+      </div>
+    </div>
+
     <button id="startBtn">スタート</button>
-  </div>
-  <script src="js/renderer.js"></script>
-  <script src="js/game.js"></script>
+
+    <script src="js/game.js"></script>
   </body>
 </html>
