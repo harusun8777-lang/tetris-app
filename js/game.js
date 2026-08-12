@@ -40,7 +40,8 @@ function createPlayer({ canvasId, scoreId, controls }) {
     board: createBoard(),
     current: randomPiece(),
     score: 0,
-    lines: 0,   
+    lines: 0,
+    level: 0,
     dropInterval: 500,
     dropCounter: 0,
     moveCooldown: 0,
@@ -50,6 +51,20 @@ function createPlayer({ canvasId, scoreId, controls }) {
     pressed: { left: false, right: false, down: false },
     isGameOver: false,
   };
+}
+
+let gameMode = 1;
+
+function getActivePlayers() {
+  return players.slice(0, gameMode);
+}
+
+function setGameMode(mode) {
+  gameMode = mode;
+  const player2Panel = document.getElementById('player2Panel');
+  if (player2Panel) {
+    player2Panel.style.display = mode === 2 ? '' : 'none';
+  }
 }
 
 function collisionAt(player, piece, offsetX = piece.x, offsetY = piece.y, shape = piece.shape) {
@@ -143,8 +158,10 @@ function clearLines(player) {
     player.score += SCORE_TABLE[cleared] * (player.level + 1);
     updateScore(player.scoreId, player.score);
 
-    const opponent = player === players[0] ? players[1] : players[0];
-    addGarbage(opponent, cleared);
+    if (gameMode === 2) {
+      const opponent = player === players[0] ? players[1] : players[0];
+      addGarbage(opponent, cleared);
+    }
   }
 }
 
@@ -342,17 +359,31 @@ function startGame() {
   state.rafId = requestAnimationFrame(gameLoop);
 }
 
+function initGameMode() {
+  const modeInputs = document.querySelectorAll('input[name="mode"]');
+  modeInputs.forEach((input) => {
+    input.addEventListener('change', () => {
+      setGameMode(parseInt(input.value, 10));
+    });
+  });
+
+  const selectedMode = document.querySelector('input[name="mode"]:checked');
+  setGameMode(selectedMode ? parseInt(selectedMode.value, 10) : 1);
+}
+
 function gameLoop(time = 0) {
   const delta = state.lastTime ? time - state.lastTime : 16;
   state.lastTime = time;
 
-  players.forEach((player) => updatePlayer(player, delta));
-  players.forEach(renderPlayer);
+  const activePlayers = getActivePlayers();
+  activePlayers.forEach((player) => updatePlayer(player, delta));
+  activePlayers.forEach(renderPlayer);
 
   state.rafId = requestAnimationFrame(gameLoop);
 }
 
 document.getElementById('startBtn').addEventListener('click', startGame);
+initGameMode();
 players.forEach(bindControls);
 players.forEach((player) => {
   updateScore(player.scoreId, player.score);
