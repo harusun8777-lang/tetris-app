@@ -60,7 +60,12 @@ function collisionAt(player, piece, offsetX = piece.x, offsetY = piece.y, shape 
       const nextX = offsetX + x;
       const nextY = offsetY + y;
 
-      if ( nextX < 0 || nextX >= COLS || (nextY >= 0 && player.board[nextY][nextX])) {
+      if (
+        nextY >= ROWS ||
+        nextX < 0 ||
+        nextX >= COLS ||
+        (nextY >= 0 && nextY < ROWS && player.board[nextY][nextX])
+      ) {
         return true;
       }
     }
