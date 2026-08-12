@@ -336,6 +336,10 @@ const state = {
 };
 
 function startGame() {
+  document.querySelectorAll('input[name="mode"]').forEach((input) => {
+    input.disabled = true;
+  });
+  initGameMode();
   players.forEach((player) => {
     player.board = createBoard();
     player.current = randomPiece();
@@ -383,7 +387,6 @@ function gameLoop(time = 0) {
 }
 
 document.getElementById('startBtn').addEventListener('click', startGame);
-initGameMode();
 players.forEach(bindControls);
 players.forEach((player) => {
   updateScore(player.scoreId, player.score);
