@@ -265,9 +265,7 @@ function updateScore(id, value) {
 
 function updatePlayer(player, delta) {
   if (player.isGameOver) {
-    document.querySelectorAll('input[name="mode"]').forEach((input) => {
-      input.disabled = false;
-    });
+    reset();
     return;
   }
   player.moveCooldown -= delta;
