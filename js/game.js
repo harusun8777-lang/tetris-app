@@ -106,6 +106,9 @@ function spawnPiece(player) {
   player.current = randomPiece();
   if (collisionAt(player, player.current)) {
     player.isGameOver = true;
+    document.querySelectorAll('input[name="mode"]').forEach((input) => {
+      input.disabled = false;
+    });
   }
 }
 
@@ -154,13 +157,16 @@ function clearLines(player) {
 
   if (cleared > 0) {
     player.lines += cleared;
-    player.level = Math.floor(player.lines / 10);
+    player.level = Math.floor(player.lines / 5);
     player.score += SCORE_TABLE[cleared] * (player.level + 1);
     updateScore(player.scoreId, player.score);
 
     if (gameMode === 2) {
       const opponent = player === players[0] ? players[1] : players[0];
       addGarbage(opponent, cleared);
+    }
+    if (gameMode === 1) {
+      player.dropInterval = Math.max(100, 500 - player.level * 40);
     }
   }
 }
@@ -244,6 +250,9 @@ function renderPlayer(player) {
     ctx.font = 'bold 26px sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('GAME OVER', player.canvas.width / 2, player.canvas.height / 2);
+    document.querySelectorAll('input[name="mode"]').forEach((input) => {
+      input.disabled = false;
+    });
   }
 }
 
@@ -255,8 +264,12 @@ function updateScore(id, value) {
 }
 
 function updatePlayer(player, delta) {
-  if (player.isGameOver) return;
-
+  if (player.isGameOver) {
+    document.querySelectorAll('input[name="mode"]').forEach((input) => {
+      input.disabled = false;
+    });
+    return;
+  }
   player.moveCooldown -= delta;
   player.downCooldown -= delta;
   player.dropCounter += delta;

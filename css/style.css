@@ -46,3 +46,10 @@ canvas {
   color: #fff;
   cursor: pointer;
 }
+
+input[disabled] {
+  pointer-events: none;
+}
+
+
+
