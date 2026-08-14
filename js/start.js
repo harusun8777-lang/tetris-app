@@ -1,9 +1,10 @@
-function riset(){
-    document.querySelectorAll('input[name="mode"]').forEach((input) => {
-      input.disabled = false;
-    });
-    document.querySelectorAll("startBtn").disabled = false;
-    players.forEach((player) => {
+function startGame() {
+  document.querySelectorAll('input[name="mode"]').forEach((input) => {
+    input.disabled = true;
+  });
+  document.querySelectorAll("startBtn").disabled = true;
+  initGameMode();
+  players.forEach((player) => {
     player.board = createBoard();
     player.current = randomPiece();
     player.score = 0;
@@ -16,12 +17,12 @@ function riset(){
     player.isGameOver = false;
     player.pressed = { left: false, right: false, down: false };
     updateScore(player.scoreId, player.score);
-    renderPlayer(player);
   });
 
-  // ゲームループ停止
   if (state.rafId) {
     cancelAnimationFrame(state.rafId);
-    state.rafId = null;
   }
+
+  state.lastTime = 0;
+  state.rafId = requestAnimationFrame(gameLoop);
 }
