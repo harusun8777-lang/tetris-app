@@ -265,7 +265,7 @@ function updateScore(id, value) {
 
 function updatePlayer(player, delta) {
   if (player.isGameOver) {
-    reset();
+    riset();
     return;
   }
   player.moveCooldown -= delta;
