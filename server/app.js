@@ -3,7 +3,11 @@ const app = express();
 const path = require('path');
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '..')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
 
 app.use('/api/score', require('./routes/score'));
 app.use('/api/timeline', require('./routes/timeline'));

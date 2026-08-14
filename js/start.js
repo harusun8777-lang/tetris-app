@@ -3,7 +3,11 @@ function startGame() {
     document.querySelectorAll('input[name="mode"]').forEach((input) => {
         input.disabled = true;
     });
-    document.querySelectorAll("startBtn").disabled = true;
+
+    const startButton = document.getElementById('startBtn');
+    if (startButton) {
+        startButton.disabled = true;
+    }
 
     players.forEach((player) => {
         player.board = createBoard();
@@ -26,4 +30,9 @@ function startGame() {
 
     state.lastTime = 0;
     state.rafId = requestAnimationFrame(gameLoop);
+}
+
+const startButton = document.getElementById('startBtn');
+if (startButton) {
+    startButton.addEventListener('click', startGame);
 }

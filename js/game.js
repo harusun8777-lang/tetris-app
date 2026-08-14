@@ -369,7 +369,6 @@ function gameLoop(time = 0) {
   state.rafId = requestAnimationFrame(gameLoop);
 }
 
-document.getElementById('startBtn').addEventListener('click', startGame);
 players.forEach(bindControls);
 players.forEach((player) => {
   updateScore(player.scoreId, player.score);

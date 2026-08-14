@@ -2,7 +2,12 @@ function riset() {
   document.querySelectorAll('input[name="mode"]').forEach((input) => {
     input.disabled = false;
   });
-  document.querySelectorAll("startBtn").disabled = false;
+
+  const startButton = document.getElementById('startBtn');
+  if (startButton) {
+    startButton.disabled = false;
+  }
+
   players.forEach((player) => {
     player.board = createBoard();
     player.current = randomPiece();
