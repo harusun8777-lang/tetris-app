@@ -37,35 +37,139 @@ canvas {
 }
 
 #startBtn {
-  margin-top: 20px;
-  padding: 10px 24px;
-  font-size: 16px;
+  margin-top: 30px;
+  padding: 16px 32px;
+  font-size: 18px;
   border: none;
   border-radius: 8px;
   background: #ff8a00;
   color: #fff;
   cursor: pointer;
+  min-height: 56px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s;
+}
+
+#startBtn:hover {
+  background: #ff9f1a;
+}
+
+#startBtn:active {
+  background: #e67e00;
+}
+
+#startBtn:disabled {
+  background: #888;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 input[disabled] {
   pointer-events: none;
 }
 
-@media (max-width: 600px) {
+.match-mode {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  margin-bottom: 30px;
+  font-size: 16px;
+}
+
+.match-mode label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.match-mode label:hover {
+  background: rgba(255, 138, 0, 0.1);
+}
+
+.match-mode input[type="radio"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+#mobileControls {
+  display: none;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  width: 90vw;
+  max-width: 400px;
+  margin-top: 30px;
+}
+
+#mobileControls button {
+  padding: 20px;
+  font-size: 24px;
+  border: 2px solid #ff8a00;
+  border-radius: 8px;
+  background: #222;
+  color: #ff8a00;
+  cursor: pointer;
+  min-height: 70px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  font-weight: bold;
+  transition: all 0.1s;
+}
+
+#mobileControls button:active {
+  background: #ff8a00;
+  color: #222;
+  transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
   .match {
     flex-direction: column;
-    gap: 20px;
+    gap: 30px;
   }
 
   canvas {
-    width: 90vw;
+    width: calc(90vw - 4px);
     height: auto;
+    max-width: 300px;
   }
 
   #startBtn {
-    width: 80vw;
+    width: 90vw;
+    max-width: 400px;
     font-size: 20px;
+    padding: 18px;
+    min-height: 60px;
+  }
+
+  #mobileControls {
+    display: grid;
+  }
+
+  .match-mode {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .match-mode label {
+    gap: 12px;
+    font-size: 18px;
     padding: 14px;
+  }
+
+  .match-mode input[type="radio"] {
+    width: 20px;
+    height: 20px;
   }
 }
 
