@@ -128,69 +128,64 @@ input[disabled] {
 }
 
 @media (max-width: 768px) {
+
   body {
-    padding: 10px;
-    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    overflow: hidden; /* ← スクロールを防ぐ */
   }
 
   .match {
     flex-direction: column;
-    gap: 10px;
-  }
-
-  #player2Panel {
-    display: none !important;
-  }
-
-  canvas {
-    width: calc(90vw - 4px);
-    height: auto;
-    max-width: 300px;
-  }
-
-  #startBtn {
-    margin-top: 10px;
-    width: 80vw;
-    max-width: 400px;
-    font-size: 22px;
-    padding: 16px;
-    min-height: 60px;
-  }
-
-  #mobileControls {
-    display: grid;
-  }
-
-  .match-mode {
-    flex-direction: column;
-    gap: 12px;
+    gap: 10px; /* ← 縦の余白を減らす */
     align-items: center;
   }
 
-  .match-mode label:nth-child(2) {
-    display: none;
+  /* キャンバスをスマホ用に縮める */
+  canvas {
+    width: 85vw;
+    height: auto;
+    max-height: 70vh; /* ← 画面の半分以下に収める */
   }
 
-  .match-mode label {
-    gap: 12px;
-    font-size: 18px;
-    padding: 14px;
+  /* モード選択の余白を減らす */
+  .match-mode {
+    margin-bottom: 10px;
+    gap: 8px;
   }
 
-  .match-mode input[type="radio"] {
-    width: 20px;
-    height: 20px;
+  /* スタートボタンの余白を減らす */
+  #startBtn {
+    margin-top: 10px;
+    width: 80vw;
+    max-width: 350px;
+    font-size: 20px;
+    padding: 12px;
+    min-height: 50px;
   }
-    #mobileControls button {
-    width: 80px;
-    height: 80px;
-    font-size: 28px;
-    border-radius: 16px;
+
+  /* スマホ操作ボタンを横並びにして高さを節約 */
+  #mobileControls {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    width: 85vw;
+    max-width: 350px;
+    margin-top: 10px;
   }
+
+  #mobileControls button {
+    height: 60px;
+    font-size: 22px;
+    border-radius: 10px;
+  }
+
+  /* スコアのサイズ調整 */
   .score {
-    font-size: 24px;
+    font-size: 20px;
   }
 }
+
 
 
 
