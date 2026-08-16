@@ -139,6 +139,8 @@ input[disabled] {
     flex-direction: column;
     gap: 10px; /* ← 縦の余白を減らす */
     align-items: center;
+    transform: scale(0.9);
+    transform-origin: top center;
   }
 
   /* キャンバスをスマホ用に縮める */
@@ -148,9 +150,8 @@ input[disabled] {
     max-height: 70vh; /* ← 画面の半分以下に収める */
   }
 
-  /* モード選択の余白を減らす */
   .match-mode {
-    margin-bottom: 10px;
+    margin-bottom: 0px;
     gap: 8px;
   }
 
@@ -171,12 +172,12 @@ input[disabled] {
     gap: 8px;
     width: 85vw;
     max-width: 350px;
-    margin-top: 10px;
+    margin-top: 2px;
   }
 
   #mobileControls button {
     height: 60px;
-    font-size: 22px;
+    font-size: 20px;
     border-radius: 10px;
   }
 
