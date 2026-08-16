@@ -102,13 +102,26 @@ function rotateShape(shape) {
   return rotated;
 }
 
+function unlockStartControls() {
+  document.querySelectorAll('input[name="mode"]').forEach((input) => {
+    input.disabled = false;
+  });
+
+  const startButton = document.getElementById('startBtn');
+  if (startButton) {
+    startButton.disabled = false;
+  }
+}
+
 function spawnPiece(player) {
   player.current = randomPiece();
   if (collisionAt(player, player.current)) {
     player.isGameOver = true;
-    document.querySelectorAll('input[name="mode"]').forEach((input) => {
-      input.disabled = false;
-    });
+    unlockStartControls();
+    if (state.rafId) {
+      cancelAnimationFrame(state.rafId);
+      state.rafId = null;
+    }
   }
 }
 
@@ -250,9 +263,7 @@ function renderPlayer(player) {
     ctx.font = 'bold 26px sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('GAME OVER', player.canvas.width / 2, player.canvas.height / 2);
-    document.querySelectorAll('input[name="mode"]').forEach((input) => {
-      input.disabled = false;
-    });
+    return;
   }
 }
 
@@ -265,7 +276,6 @@ function updateScore(id, value) {
 
 function updatePlayer(player, delta) {
   if (player.isGameOver) {
-    riset();
     return;
   }
   player.moveCooldown -= delta;
@@ -353,7 +363,7 @@ function initGameMode() {
       setGameMode(parseInt(input.value, 10));
     });
   });
-
+  
   const selectedMode = document.querySelector('input[name="mode"]:checked');
   setGameMode(selectedMode ? parseInt(selectedMode.value, 10) : 1);
 }

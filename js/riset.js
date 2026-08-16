@@ -24,7 +24,6 @@ function riset() {
     renderPlayer(player);
   });
 
-  // ゲームループ停止
   if (state.rafId) {
     cancelAnimationFrame(state.rafId);
     state.rafId = null;
