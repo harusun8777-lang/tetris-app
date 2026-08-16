@@ -137,6 +137,10 @@ input[disabled] {
     gap: 30px;
   }
 
+  #player2Panel {
+    display: none !important;
+  }
+
   canvas {
     width: calc(90vw - 4px);
     height: auto;
@@ -159,6 +163,10 @@ input[disabled] {
     flex-direction: column;
     gap: 12px;
     align-items: center;
+  }
+
+  .match-mode label:nth-child(2) {
+    display: none;
   }
 
   .match-mode label {

@@ -384,12 +384,28 @@ const state = {
 
 function initGameMode() {
   const modeInputs = document.querySelectorAll('input[name="mode"]');
+  
+  // On mobile, disable 2-player mode
+  const isMobile = window.innerWidth <= 768;
+  const twoPlayerInput = modeInputs[1];
+  if (isMobile && twoPlayerInput) {
+    twoPlayerInput.disabled = true;
+  }
+  
   modeInputs.forEach((input) => {
+    if (input.disabled) return;
     input.addEventListener('change', () => {
-      setGameMode(parseInt(input.value, 10));
+      const selectedMode = parseInt(input.value, 10);
+      if (isMobile && selectedMode === 2) {
+        // Force single player on mobile
+        modeInputs[0].checked = true;
+        setGameMode(1);
+      } else {
+        setGameMode(selectedMode);
+      }
     });
   });
-  
+
   const selectedMode = document.querySelector('input[name="mode"]:checked');
   setGameMode(selectedMode ? parseInt(selectedMode.value, 10) : 1);
 }
