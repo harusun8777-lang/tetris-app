@@ -1,6 +1,6 @@
 const ROWS = 20;
 const COLS = 10;
-const BLOCK = 30;
+const BLOCK = 25;
 const SCORE_TABLE = [0, 100, 300, 500, 800];
 
 const TETROMINOS = {

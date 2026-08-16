@@ -132,60 +132,56 @@ input[disabled] {
   body {
     padding: 0;
     margin: 0;
-    overflow: hidden; /* ← スクロールを防ぐ */
+    overflow-y: auto; /* ← スクロール許可（必要なときだけ） */
   }
 
   .match {
     flex-direction: column;
-    gap: 10px; /* ← 縦の余白を減らす */
+    gap: 6px; /* ← さらに余白削減 */
     align-items: center;
-    transform: scale(0.9);
-    transform-origin: top center;
   }
 
-  /* キャンバスをスマホ用に縮める */
+  /* キャンバスを画面に合わせて縮める */
   canvas {
     width: 85vw;
     height: auto;
-    max-height: 70vh; /* ← 画面の半分以下に収める */
+    max-height: 65vh; /* ← 70vh → 60vh にして確実に収める */
   }
 
   .match-mode {
     margin-bottom: 0px;
-    gap: 8px;
+    gap: 6px;
   }
 
-  /* スタートボタンの余白を減らす */
   #startBtn {
-    margin-top: 10px;
+    margin-top: 6px;
     width: 80vw;
-    max-width: 350px;
+    max-width: 330px;
     font-size: 20px;
-    padding: 12px;
-    min-height: 50px;
+    padding: 10px;
+    min-height: 48px;
   }
 
-  /* スマホ操作ボタンを横並びにして高さを節約 */
   #mobileControls {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    gap: 6px;
     width: 85vw;
-    max-width: 350px;
-    margin-top: 2px;
+    max-width: 330px;
+    margin-top: 4px;
   }
 
   #mobileControls button {
-    height: 60px;
-    font-size: 20px;
+    height: 48px;
+    font-size: 18px;
     border-radius: 10px;
   }
 
-  /* スコアのサイズ調整 */
   .score {
     font-size: 20px;
   }
 }
+
 
 
 
