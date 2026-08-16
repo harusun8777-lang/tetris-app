@@ -393,8 +393,9 @@ function initGameMode() {
   }
   
   modeInputs.forEach((input) => {
-    if (input.disabled) return;
     input.addEventListener('change', () => {
+      if (input.disabled) return;
+      
       const selectedMode = parseInt(input.value, 10);
       if (isMobile && selectedMode === 2) {
         // Force single player on mobile
@@ -426,3 +427,6 @@ players.forEach((player) => {
   updateScore(player.scoreId, player.score);
   renderPlayer(player);
 });
+
+// Initialize game mode selector
+initGameMode();
