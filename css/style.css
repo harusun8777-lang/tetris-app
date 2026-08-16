@@ -51,6 +51,23 @@ input[disabled] {
   pointer-events: none;
 }
 
+@media (max-width: 600px) {
+  .match {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  canvas {
+    width: 90vw;
+    height: auto;
+  }
+
+  #startBtn {
+    width: 80vw;
+    font-size: 20px;
+    padding: 14px;
+  }
+}
 
 
 

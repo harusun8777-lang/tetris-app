@@ -338,6 +338,32 @@ function bindControls(player) {
   });
 }
 
+document.getElementById("leftBtn").addEventListener("touchstart", () => {
+  players[0].pressed.left = true;
+});
+document.getElementById("leftBtn").addEventListener("touchend", () => {
+  players[0].pressed.left = false;
+});
+
+document.getElementById("rightBtn").addEventListener("touchstart", () => {
+  players[0].pressed.right = true;
+});
+document.getElementById("rightBtn").addEventListener("touchend", () => {
+  players[0].pressed.right = false;
+});
+
+document.getElementById("rotateBtn").addEventListener("touchstart", () => {
+  rotatePiece(players[0]);
+});
+
+document.getElementById("downBtn").addEventListener("touchstart", () => {
+  players[0].pressed.down = true;
+});
+document.getElementById("downBtn").addEventListener("touchend", () => {
+  players[0].pressed.down = false;
+});
+
+
 const players = [
   createPlayer({
     canvasId: 'game1',

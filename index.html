@@ -1,33 +1,42 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Tetris Battle</title>
-    <link rel="stylesheet" href="css/style.css">
-  </head>
-  <body>
-    <div class="match-mode">
-      <label><input type="radio" name="mode" value="1" checked> シングルプレイ</label>
-      <label><input type="radio" name="mode" value="2"> 2人プレイ</label>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Tetris Battle</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <div class="match-mode">
+    <label><input type="radio" name="mode" value="1" checked> シングルプレイ</label>
+    <label><input type="radio" name="mode" value="2"> 2人プレイ</label>
+  </div>
+
+  <div class="match">
+    <div class="game-panel">
+      <div class="score" id="score1">Score: 0</div>
+      <canvas id="game1" width="300" height="600"></canvas>
     </div>
 
-    <div class="match">
-      <div class="game-panel">
-        <div class="score" id="score1">Score: 0</div>
-        <canvas id="game1" width="300" height="600"></canvas>
-      </div>
-
-      <div class="game-panel" id="player2Panel">
-        <div class="score" id="score2">Score: 0</div>
-        <canvas id="game2" width="300" height="600"></canvas>
-      </div>
+    <div class="game-panel" id="player2Panel">
+      <div class="score" id="score2">Score: 0</div>
+      <canvas id="game2" width="300" height="600"></canvas>
     </div>
+  </div>
+  <div id="mobileControls">
+    <button id="leftBtn">←</button>
+    <button id="rightBtn">→</button>
+    <button id="rotateBtn">⟳</button>
+    <button id="downBtn">↓</button>
+  </div>
 
-    <button id="startBtn">スタート</button>
+  <button id="startBtn">スタート</button>
 
-    <script src="js/game.js"></script>
-    <script src="js/riset.js"></script>
-    <script src="js/start.js"></script>
-    <script src="js/renderer.js"></script>
-  </body>
+  <script src="js/game.js"></script>
+  <script src="js/riset.js"></script>
+  <script src="js/start.js"></script>
+  <script src="js/renderer.js"></script>
+</body>
+
 </html>
