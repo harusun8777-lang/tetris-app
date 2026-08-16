@@ -130,7 +130,6 @@ input[disabled] {
 @media (max-width: 768px) {
   body {
     padding: 10px;
-    margin: 0;
     overflow: hidden;
   }
 
@@ -146,7 +145,7 @@ input[disabled] {
   canvas {
     width: calc(90vw - 4px);
     height: auto;
-    max-width: 275px;
+    max-width: 300px;
   }
 
   #startBtn {
