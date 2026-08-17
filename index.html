@@ -6,12 +6,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tetris Battle</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/home.css">
 </head>
 
 <body>
-  <div class="match-mode">
-    <label><input type="radio" name="mode" value="1" checked> シングルプレイ</label>
-    <label><input type="radio" name="mode" value="2"> 2人プレイ</label>
+  <div id="homeScreen" style="text-align:center; margin-top:40px;">
+    <h1 class="home-title">テトリス</h1>
+
+    <div class="match-mode">
+      <label><input type="radio" name="mode" value="1" checked> シングルプレイ</label>
+      <label><input type="radio" name="mode" value="2"> 2人プレイ</label>
+    </div>
+
+    <button class="startBtn" id="startBtn">スタート</button>
+    <button id="showRankingBtn" class="secondary-btn">ランキングを見る</button>
+
+    <div class="howto-box">
+      <h2>操作説明</h2>
+
+      <div class="howto-group">
+        <h3>パソコン</h3>
+        <ul>
+          <li>左右: ← → /A D</li>
+          <li>落下: ↓ 　/S </li>
+          <li>回転: ↑ 　/W</li>
+          <li>2人プレイ時は 1P: 矢印キー / 2P: A D S W</li>
+        </ul>
+      </div>
+
+      <div class="howto-group">
+        <h3>ケータイ</h3>
+        <ul>
+          <li>画面下のボタンで左右・落下・回転を操作</li>
+          <li>モード選択は表示されず、シングルプレイ固定</li>
+          <li>1列揃えると得点アップ</li>
+          <li style="color:red">＊対戦モードできない</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <div class="match">
@@ -32,13 +64,10 @@
     <button id="downBtn">↓</button>
   </div>
 
-  <button id="startBtn">スタート</button>
-  <button id="showRankingBtn" class="secondary-btn">ランキングを見る</button>
-
   <div id="rankingScreen" style="display:none; text-align:center; margin-top:20px;">
     <h2>ランキング TOP5</h2>
     <div id="topScores" class="score"></div>
-    <button id="backToGame">戻る</button>
+    <button id="backToGame">ホームに戻る</button>
   </div>
   
   <script src="js/game.js"></script>
@@ -46,6 +75,7 @@
   <script src="js/start.js"></script>
   <script src="js/renderer.js"></script>
   <script src="js/mobile-controls.js"></script>
+  <script src="js/home.js"></script>
 </body>
 
 </html>

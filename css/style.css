@@ -9,6 +9,9 @@ body {
   margin: 0;
   font-family: sans-serif;
 } 
+h1{
+  margin:0%;
+}
 
 .match {
   display: flex;
@@ -142,7 +145,6 @@ input[disabled] {
   color: #222;
   transform: scale(0.95);
 }
-
 @media (max-width: 768px) {
 
   body {
@@ -165,6 +167,7 @@ input[disabled] {
   }
 
   .match-mode {
+    display: none;
     margin-bottom: 0px;
     gap: 6px;
   }
@@ -195,14 +198,5 @@ input[disabled] {
 
   .score {
     font-size: 20px;
-  }
-  .secondary-btn{
-    margin:5px;
-    background-color:#222;
-    border-color: 1px solid #FFF;
-    color: #FFF;
-  }
-  .secondary-btn:hover{
-    background-color: #444;
   }
 }

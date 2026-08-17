@@ -457,37 +457,47 @@ function saveScore(score) {
   localStorage.setItem("tetrisScores", JSON.stringify(top5));
 }
 
-function showRankingScreen() {
-  const match = document.querySelector(".match");
-  const rankingScreen = document.getElementById("rankingScreen");
-  const matchMode = document.querySelector(".match-mode");
+function setMobileControlsVisibility(isVisible) {
   const mobileControls = document.getElementById("mobileControls");
-  const startBtn = document.getElementById("startBtn");
-  const showRankingBtn = document.getElementById("showRankingBtn");
+  if (!mobileControls) return;
 
-  if (match) match.style.display = "none";
-  if (matchMode) matchMode.style.display = "none";
-  if (mobileControls) mobileControls.style.display = "none";
-  if (startBtn) startBtn.style.display = "none";
-  if (showRankingBtn) showRankingBtn.style.display = "none";
-  if (rankingScreen) rankingScreen.style.display = "block";
-  showTopScores();
+  const isMobile = window.innerWidth <= 768;
+  mobileControls.style.display = isMobile && isVisible ? "grid" : "none";
 }
 
-function showGameScreen() {
-  const rankingScreen = document.getElementById("rankingScreen");
+function showHomeScreen() {
+  const homeScreen = document.getElementById("homeScreen");
   const match = document.querySelector(".match");
+  const rankingScreen = document.getElementById("rankingScreen");
   const matchMode = document.querySelector(".match-mode");
-  const mobileControls = document.getElementById("mobileControls");
   const startBtn = document.getElementById("startBtn");
   const showRankingBtn = document.getElementById("showRankingBtn");
 
+  if (homeScreen) homeScreen.style.display = "block";
+  if (match) match.style.display = "none";
   if (rankingScreen) rankingScreen.style.display = "none";
-  if (match) match.style.display = "flex";
   if (matchMode) matchMode.style.display = "flex";
-  if (mobileControls) mobileControls.style.display = "grid";
   if (startBtn) startBtn.style.display = "inline-block";
   if (showRankingBtn) showRankingBtn.style.display = "inline-block";
+  setMobileControlsVisibility(false);
+}
+
+function showRankingScreen() {
+  const homeScreen = document.getElementById("homeScreen");
+  const match = document.querySelector(".match");
+  const rankingScreen = document.getElementById("rankingScreen");
+  const matchMode = document.querySelector(".match-mode");
+  const startBtn = document.getElementById("startBtn");
+  const showRankingBtn = document.getElementById("showRankingBtn");
+
+  if (homeScreen) homeScreen.style.display = "none";
+  if (match) match.style.display = "none";
+  if (matchMode) matchMode.style.display = "none";
+  if (startBtn) startBtn.style.display = "none";
+  if (showRankingBtn) showRankingBtn.style.display = "none";
+  setMobileControlsVisibility(false);
+  if (rankingScreen) rankingScreen.style.display = "block";
+  showTopScores();
 }
 
 const showRankingBtn = document.getElementById("showRankingBtn");
@@ -497,5 +507,6 @@ if (showRankingBtn) {
 
 const backToGameBtn = document.getElementById("backToGame");
 if (backToGameBtn) {
-  backToGameBtn.addEventListener("click", showGameScreen);
+  backToGameBtn.textContent = "戻る";
+  backToGameBtn.addEventListener("click", showHomeScreen);
 }
