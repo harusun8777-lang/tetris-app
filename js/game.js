@@ -117,6 +117,9 @@ function spawnPiece(player) {
   player.current = randomPiece();
   if (collisionAt(player, player.current)) {
     player.isGameOver = true;
+    saveScore(player.score);
+    showTopScores();
+    showRankingScreen();
     unlockStartControls();
     if (state.rafId) {
       cancelAnimationFrame(state.rafId);
@@ -430,3 +433,69 @@ players.forEach((player) => {
 
 // Initialize game mode selector
 initGameMode();
+
+function showTopScores() {
+  const scores = JSON.parse(localStorage.getItem("tetrisScores") || "[]");
+  const list = document.getElementById("topScores");
+
+  list.innerHTML = scores
+    .map((s, i) => `<div>${i + 1}位: ${s}</div>`)
+    .join("");
+}
+function saveScore(score) {
+  // 今までのスコアを読み込む（なければ空配列）
+  const scores = JSON.parse(localStorage.getItem("tetrisScores") || "[]");
+
+  // 新しいスコアを追加
+  scores.push(score);
+
+  // 高い順に並べて上位5件だけ残す
+  scores.sort((a, b) => b - a);
+  const top5 = scores.slice(0, 5);
+
+  // 保存
+  localStorage.setItem("tetrisScores", JSON.stringify(top5));
+}
+
+function showRankingScreen() {
+  const match = document.querySelector(".match");
+  const rankingScreen = document.getElementById("rankingScreen");
+  const matchMode = document.querySelector(".match-mode");
+  const mobileControls = document.getElementById("mobileControls");
+  const startBtn = document.getElementById("startBtn");
+  const showRankingBtn = document.getElementById("showRankingBtn");
+
+  if (match) match.style.display = "none";
+  if (matchMode) matchMode.style.display = "none";
+  if (mobileControls) mobileControls.style.display = "none";
+  if (startBtn) startBtn.style.display = "none";
+  if (showRankingBtn) showRankingBtn.style.display = "none";
+  if (rankingScreen) rankingScreen.style.display = "block";
+  showTopScores();
+}
+
+function showGameScreen() {
+  const rankingScreen = document.getElementById("rankingScreen");
+  const match = document.querySelector(".match");
+  const matchMode = document.querySelector(".match-mode");
+  const mobileControls = document.getElementById("mobileControls");
+  const startBtn = document.getElementById("startBtn");
+  const showRankingBtn = document.getElementById("showRankingBtn");
+
+  if (rankingScreen) rankingScreen.style.display = "none";
+  if (match) match.style.display = "flex";
+  if (matchMode) matchMode.style.display = "flex";
+  if (mobileControls) mobileControls.style.display = "grid";
+  if (startBtn) startBtn.style.display = "inline-block";
+  if (showRankingBtn) showRankingBtn.style.display = "inline-block";
+}
+
+const showRankingBtn = document.getElementById("showRankingBtn");
+if (showRankingBtn) {
+  showRankingBtn.addEventListener("click", showRankingScreen);
+}
+
+const backToGameBtn = document.getElementById("backToGame");
+if (backToGameBtn) {
+  backToGameBtn.addEventListener("click", showGameScreen);
+}

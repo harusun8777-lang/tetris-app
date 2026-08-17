@@ -36,7 +36,8 @@ canvas {
   font-size: 20px;
 }
 
-#startBtn {
+#startBtn,
+#backToGame {
   margin-top: 30px;
   padding: 16px 32px;
   font-size: 18px;
@@ -51,11 +52,13 @@ canvas {
   transition: background 0.2s;
 }
 
-#startBtn:hover {
+#startBtn:hover,
+#backToGame:hover {
   background: #ff9f1a;
 }
 
-#startBtn:active {
+#startBtn:active,
+#backToGame:active {
   background: #e67e00;
 }
 
@@ -63,6 +66,19 @@ canvas {
   background: #888;
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+#rankingScreen {
+  display: none;
+  text-align: center;
+  margin-top: 20px;
+}
+
+#topScores {
+  margin: 20px 0;
+  display: grid;
+  gap: 8px;
+  min-width: 220px;
 }
 
 input[disabled] {
@@ -180,9 +196,13 @@ input[disabled] {
   .score {
     font-size: 20px;
   }
+  .secondary-btn{
+    margin:5px;
+    background-color:#222;
+    border-color: 1px solid #FFF;
+    color: #FFF;
+  }
+  .secondary-btn:hover{
+    background-color: #444;
+  }
 }
-
-
-
-
-
