@@ -118,8 +118,17 @@ function spawnPiece(player) {
   if (collisionAt(player, player.current)) {
     player.isGameOver = true;
     saveScore(player.score);
+    
+    // ランキング画面に前回のスコアを表示
+    const lastScoreEl = document.getElementById("lastGameScore");
+    const lastGametext = document.getElementById("lastGametext");
+    if (lastScoreEl) {
+      lastGametext.textContent = "今回のスコア";
+      lastScoreEl.textContent = "Score: " + player.score;
+    }
+    
     showTopScores();
-    showRankingScreen();
+    showRankingScreen(true);
     unlockStartControls();
     if (state.rafId) {
       cancelAnimationFrame(state.rafId);
@@ -455,6 +464,8 @@ function saveScore(score) {
 
   // 保存
   localStorage.setItem("tetrisScores", JSON.stringify(top5));
+  // 前回のスコアとして保存
+  localStorage.setItem("lastScore", score);
 }
 
 function setMobileControlsVisibility(isVisible) {
@@ -482,7 +493,7 @@ function showHomeScreen() {
   setMobileControlsVisibility(false);
 }
 
-function showRankingScreen() {
+function showRankingScreen(isGameOver = false) {
   const homeScreen = document.getElementById("homeScreen");
   const match = document.querySelector(".match");
   const rankingScreen = document.getElementById("rankingScreen");
@@ -497,6 +508,19 @@ function showRankingScreen() {
   if (showRankingBtn) showRankingBtn.style.display = "none";
   setMobileControlsVisibility(false);
   if (rankingScreen) rankingScreen.style.display = "block";
+  
+  // ゲームオーバー時は何もしない（spawnPiece()で既に設定済み）
+  // ランキングボタンから遷移した場合は「前回のスコア」を表示
+  if (!isGameOver) {
+    const lastScoreEl = document.getElementById("lastGameScore");
+    const lastGametext = document.getElementById("lastGametext");
+    const lastScore = localStorage.getItem("lastScore") || "0";
+    if (lastScoreEl) {
+      lastGametext.textContent = "前回のスコア";
+      lastScoreEl.textContent = "Score: " + lastScore;
+    }
+  }
+  
   showTopScores();
 }
 

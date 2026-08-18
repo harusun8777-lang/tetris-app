@@ -16,6 +16,24 @@
     margin-bottom: 10px;
 }
 
+.last-score-display {
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    border: 1px solid rgba(255, 165, 0, 0.5);
+    border-radius: 8px;
+    background: rgba(255, 165, 0, 0.1);
+    min-width: 180px;
+}
+
+.home-score-display {
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    border: 1px solid rgba(255, 165, 0, 0.5);
+    border-radius: 8px;
+    background: rgba(255, 165, 0, 0.1);
+    min-width: 180px;
+}
+
 .home-box {
     border: 2px solid #fff;
     padding: 30px 40px;
