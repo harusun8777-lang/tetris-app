@@ -161,7 +161,7 @@ input[disabled] {
 
   /* キャンバスを画面に合わせて縮める */
   canvas {
-    max-width: 320px;
+    max-width: 300px;
     width: 85vw;
     height: auto;
     max-height: 65vh;  
