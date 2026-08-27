@@ -92,7 +92,7 @@ input[disabled] {
   display: flex;
   gap: 30px;
   justify-content: center;
-  margin-bottom: 30px;
+  margin: 0.5rem;
   font-size: 16px;
 }
 
@@ -161,9 +161,10 @@ input[disabled] {
 
   /* キャンバスを画面に合わせて縮める */
   canvas {
+    max-width: 320px;
     width: 85vw;
     height: auto;
-    max-height: 65vh; /* ← 70vh → 60vh にして確実に収める */
+    max-height: 65vh;  
   }
 
   .match-mode {

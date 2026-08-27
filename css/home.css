@@ -26,7 +26,7 @@
 }
 
 .home-score-display {
-    margin-bottom: 20px;
+    margin: 0.5rem;
     padding: 10px 20px;
     border: 1px solid rgba(255, 165, 0, 0.5);
     border-radius: 8px;
@@ -62,8 +62,8 @@
 }
 
 .start-btn {
-    margin-top: 30px;
-    padding: 18px 40px;
+    margin: 2rem auto;
+    padding: 20px 42px;
     font-size: 24px;
     border: none;
     border-radius: 10px;
@@ -71,6 +71,7 @@
     color: #fff;
     cursor: pointer;
     transition: 0.2s;
+    width: fit-content;   /* ← 中身のサイズだけにする */ 
 }
 
 .start-btn:hover {
@@ -78,7 +79,7 @@
 }
 
 .secondary-btn {
-    margin-top: 5px;
+    margin: 1rem  auto 0 auto;
     background-color: #222;
     border: 1px solid #FFF;
     color: #FFF;
@@ -86,6 +87,7 @@
     padding: 14px 24px;
     font-size: 16px;
     cursor: pointer;
+    width: fit-content;
 }
 
 .secondary-btn:hover {
@@ -99,25 +101,27 @@
     border-radius: 12px;
     padding: 16px 18px;
     text-align: left;
-    margin: 0 auto;
+    margin: 1rem auto;
 }
 
 .howto-box h2 {
-    margin: 0 0 10px;
+    margin: 0 0 1rem;
     font-size: 22px;
     color: #fff;
 }
 
 .howto-box ul {
-    margin: 0;
+    margin: 0.5rem;
     padding-left: 20px;
     color: #ddd;
     line-height: 1.8;
     font-size: 15px;
+    list-style: none;
+    padding-left: 0;
 }
 
 .howto-group {
-    margin-top: 12px;
+    margin-top:1rem;
 }
 
 .howto-group h3 {
