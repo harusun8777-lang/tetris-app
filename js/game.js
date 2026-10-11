@@ -117,19 +117,31 @@ function spawnPiece(player) {
   player.current = randomPiece();
   if (collisionAt(player, player.current)) {
     player.isGameOver = true;
-    saveScore(player.score).then((saved) => {
-      if (saved) showTopScores();
-    });
-    
-    // ランキング画面に前回のスコアを表示
-    const lastScoreEl = document.getElementById("lastGameScore");
-    const lastGametext = document.getElementById("lastGametext");
-    if (lastScoreEl) {
-      lastGametext.textContent = "今回のスコア";
-      lastScoreEl.textContent = "Score: " + player.score;
+    const isMultiplayer = gameMode === 2;
+    if (isMultiplayer) {
+      const opponent = player === players[0] ? players[1] : players[0];
+      const gameOverMessage = document.getElementById("gameOverMessage");
+      const gameOverDetails = document.getElementById("gameOverDetails");
+      if (gameOverMessage) {
+        gameOverMessage.textContent = opponent.isGameOver
+          ? "DRAW"
+          : `${opponent === players[0] ? "1P" : "2P"} WIN！`;
+      }
+      if (gameOverDetails) {
+        gameOverDetails.textContent = opponent.isGameOver
+          ? `1P: ${players[0].score}　|　2P: ${players[1].score}`
+          : `${player === players[0] ? "1P" : "2P"} LOSE！\n1P: ${players[0].score}　|　2P: ${players[1].score}`;
+      }
+    } else {
+      saveScore(player.score);
+      const lastScoreEl = document.getElementById("lastGameScore");
+      const lastGametext = document.getElementById("lastGametext");
+      if (lastScoreEl && lastGametext) {
+        lastGametext.textContent = "今回のスコア";
+        lastScoreEl.textContent = "Score: " + player.score;
+      }
     }
-    
-    showTopScores();
+
     showRankingScreen(true);
     unlockStartControls();
     if (state.rafId) {
@@ -240,7 +252,7 @@ function renderPlayer(player) {
   for (let y = 0; y < ROWS; y++) {
     for (let x = 0; x < COLS; x++) {
       if (player.board[y][x]) {
-        ctx.fillStyle = '#00e5ff';
+        ctx.fillStyle = '#ffad1f';
         ctx.fillRect(x * BLOCK, y * BLOCK, BLOCK, BLOCK);
       }
     }
@@ -264,7 +276,7 @@ function renderPlayer(player) {
       const py = player.current.y + y;
 
       if (px >= 0 && px < COLS && py >= 0 && py < ROWS) {
-        ctx.fillStyle = '#ff4fd8';
+        ctx.fillStyle = '#ef4b3f';
         ctx.fillRect(px * BLOCK, py * BLOCK, BLOCK, BLOCK);
       }
     });
@@ -433,7 +445,9 @@ function gameLoop(time = 0) {
   activePlayers.forEach((player) => updatePlayer(player, delta));
   activePlayers.forEach(renderPlayer);
 
-  state.rafId = requestAnimationFrame(gameLoop);
+  if (state.rafId !== null) {
+    state.rafId = requestAnimationFrame(gameLoop);
+  }
 }
 
 players.forEach(bindControls);
@@ -508,7 +522,7 @@ function showHomeScreen() {
   const startBtn = document.getElementById("startBtn");
   const showRankingBtn = document.getElementById("showRankingBtn");
 
-  if (homeScreen) homeScreen.style.display = "block";
+  if (homeScreen) homeScreen.style.display = "flex";
   if (match) match.style.display = "none";
   if (rankingScreen) rankingScreen.style.display = "none";
   if (matchMode) matchMode.style.display = "flex";
@@ -532,6 +546,20 @@ function showRankingScreen(isGameOver = false) {
   if (showRankingBtn) showRankingBtn.style.display = "none";
   setMobileControlsVisibility(false);
   if (rankingScreen) rankingScreen.style.display = "block";
+  const gameOverMessage = document.getElementById("gameOverMessage");
+  const gameOverDetails = document.getElementById("gameOverDetails");
+  const lastScoreDisplay = document.getElementById("lastScoreDisplay");
+  const rankingTitle = document.getElementById("rankingTitle");
+  const topScores = document.getElementById("topScores");
+  const isMultiplayerResult = isGameOver && gameMode === 2;
+  if (gameOverMessage) {
+    gameOverMessage.hidden = !isGameOver;
+    if (!isMultiplayerResult) gameOverMessage.textContent = "GAME OVER";
+  }
+  if (gameOverDetails) gameOverDetails.hidden = !isMultiplayerResult;
+  if (lastScoreDisplay) lastScoreDisplay.hidden = isMultiplayerResult;
+  if (rankingTitle) rankingTitle.hidden = isMultiplayerResult;
+  if (topScores) topScores.hidden = isMultiplayerResult;
   
   // ゲームオーバー時は何もしない（spawnPiece()で既に設定済み）
   // ランキングボタンから遷移した場合は「前回のスコア」を表示
@@ -545,7 +573,7 @@ function showRankingScreen(isGameOver = false) {
     }
   }
   
-  showTopScores();
+  if (!isMultiplayerResult) showTopScores();
 }
 
 const showRankingBtn = document.getElementById("showRankingBtn");

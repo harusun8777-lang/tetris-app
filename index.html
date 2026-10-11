@@ -15,16 +15,20 @@
     <h1 class="home-title">テトリス</h1>
     <div class="home-score-display">
       <div class="score" id="homeScore">Score: 0</div>
-      <p style="font-size: 12px; color: #999; margin: 5px 0 0 0;">前回のスコア</p>
+      <p class="score-caption">前回のスコア</p>
     </div>
 
-    <div class="match-mode">
-      <label><input type="radio" name="mode" value="1" checked> シングルプレイ</label>
-      <label><input type="radio" name="mode" value="2"> 2人プレイ</label>
-    </div>
+    <div class="home-play-controls">
+      <div class="match-mode">
+        <label><input type="radio" name="mode" value="1" checked> シングルプレイ</label>
+        <label><input type="radio" name="mode" value="2"> 2人プレイ</label>
+      </div>
 
-    <button class="startBtn" id="startBtn">スタート</button>
-    <button id="showRankingBtn" class="secondary-btn">ランキングを見る</button>
+      <div class="home-actions">
+        <button class="startBtn" id="startBtn">スタート</button>
+        <button id="showRankingBtn" class="secondary-btn">ランキングを見る</button>
+      </div>
+    </div>
 
     <div class="howto-box">
       <h2>操作説明</h2>
@@ -69,11 +73,13 @@
     <button id="rotateBtn">⟳</button>
   </div>
   <div id="rankingScreen" style="display:none; text-align:center; margin-top:20px;">
-    <div class="last-score-display">
+    <p id="gameOverMessage" class="game-over-message" hidden>GAME OVER</p>
+    <p id="gameOverDetails" class="game-over-details" hidden></p>
+    <div id="lastScoreDisplay" class="last-score-display">
       <div class="score" id="lastGameScore">Score: 0</div>
-      <p id="lastGametext" style="font-size: 12px; color: #999; margin: 5px 0 0 0;">前回のスコア</p>
+      <p id="lastGametext" class="score-caption">前回のスコア</p>
     </div>
-    <h2>ランキング TOP5</h2>
+    <h2 id="rankingTitle">ランキング TOP5</h2>
     <div id="topScores" class="score"></div>
     <button id="backToGame">ホームに戻る</button>
   </div>

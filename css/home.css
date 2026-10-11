@@ -3,53 +3,97 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 16px;
+    gap: 1rem;
     width: 100%;
     min-height: 100vh;
     text-align: center;
 }
 
+#homeScreen .home-score-display,
+#homeScreen .home-actions,
+#homeScreen .howto-box {
+    width: min(26.25rem, 85vw);
+    box-sizing: border-box;
+}
+
 .home-title {
-    font-size: 48px;
+    font-size: 3rem;
     font-weight: bold;
-    color: #fff;
-    margin-bottom: 10px;
+    color: #c94335;
+    margin-bottom: 0.625rem;
 }
 
 .last-score-display {
-    margin-bottom: 20px;
-    padding: 10px 20px;
-    border: 1px solid rgba(255, 165, 0, 0.5);
-    border-radius: 8px;
-    background: rgba(255, 165, 0, 0.1);
-    min-width: 180px;
+    margin-bottom: 1.25rem;
+    padding: 0.625rem 1.25rem;
+    border: 0.125rem solid #ffd447;
+    border-radius: 1rem;
+    background: #fff5cf;
+    min-width: 11.25rem;
 }
 
 .home-score-display {
     margin: 0.5rem;
-    padding: 10px 20px;
-    border: 1px solid rgba(255, 165, 0, 0.5);
-    border-radius: 8px;
-    background: rgba(255, 165, 0, 0.1);
-    min-width: 180px;
+    padding: 0.625rem 1.25rem;
+    border: 0.125rem solid #ffd447;
+    border-radius: 1rem;
+    background: #fff5cf;
+    min-width: 11.25rem;
+}
+
+.home-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    width: min(100%, 16.25rem);
+}
+
+.home-play-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.625rem;
+}
+
+.home-actions > button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 3.5rem;
+    min-height: 3.5rem;
+    margin: 0;
+    padding: 0.875rem 1.25rem;
+    box-sizing: border-box;
+}
+
+.home-actions > #startBtn {
+    margin-top: 0;
+}
+
+.score-caption {
+    margin-top: 0.3125rem;
+    color: #72564d;
+    font-size: 0.75rem;
 }
 
 .home-box {
-    border: 2px solid #fff;
-    padding: 30px 40px;
+    border: 0.125rem solid #fff;
+    padding: 1.875rem 2.5rem;
     background: #000;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    width: 260px;
+    gap: 1.25rem;
+    width: 16.25rem;
     margin: 0 auto;
 }
 
 .menu-btn {
-    padding: 16px 32px;
-    font-size: 20px;
-    border: 2px solid #ff8a00;
-    border-radius: 8px;
+    padding: 1rem 2rem;
+    font-size: 1.25rem;
+    border: 0.125rem solid #ff8a00;
+    border-radius: 0.5rem;
     background: #222;
     color: #ff8a00;
     cursor: pointer;
@@ -63,10 +107,10 @@
 
 .start-btn {
     margin: 2rem auto;
-    padding: 20px 42px;
-    font-size: 24px;
+    padding: 1.25rem 2.625rem;
+    font-size: 1.5rem;
     border: none;
-    border-radius: 10px;
+    border-radius: 0.625rem;
     background: #ff8a00;
     color: #fff;
     cursor: pointer;
@@ -79,43 +123,44 @@
 }
 
 .secondary-btn {
-    margin: 1rem  auto 0 auto;
-    background-color: #222;
-    border: 1px solid #FFF;
-    color: #FFF;
-    border-radius: 8px;
-    padding: 14px 24px;
-    font-size: 16px;
+    margin: 0;
+    background-color: #fff;
+    border: 0.125rem solid #f0d4a0;
+    color: #d83e32;
+    border-radius: 0.75rem;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
     cursor: pointer;
     width: fit-content;
 }
 
 .secondary-btn:hover {
-    background-color: #444;
+    background-color: #fff4dc;
 }
 
 .howto-box {
-    width: min(420px, 85vw);
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 12px;
-    padding: 16px 18px;
+    width: min(26.25rem, 85vw);
+    background: rgba(255,255,255,0.8);
+    border: 0.125rem solid #fff;
+    border-radius: 1.125rem;
+    box-shadow: 0 0.25rem 0 #e8ddc8, 0 0.625rem 1.5rem rgba(89, 65, 48, 0.06);
+    padding: 1rem 1.125rem;
     text-align: left;
     margin: 1rem auto;
 }
 
 .howto-box h2 {
     margin: 0 0 1rem;
-    font-size: 22px;
-    color: #fff;
+    font-size: 1.375rem;
+    color: #d83e32;
 }
 
 .howto-box ul {
     margin: 0.5rem;
-    padding-left: 20px;
-    color: #ddd;
+    padding-left: 1.25rem;
+    color: #72564d;
     line-height: 1.8;
-    font-size: 15px;
+    font-size: 0.9375rem;
     list-style: none;
     padding-left: 0;
 }
@@ -125,7 +170,128 @@
 }
 
 .howto-group h3 {
-    margin: 0 0 8px;
-    font-size: 16px;
-    color: #ffb347;
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    color: #d94a3d;
+}
+
+@media (min-width: 48.0625rem) {
+    #homeScreen {
+        display: flex;
+        min-height: calc(100vh - 5rem);
+        gap: 1rem;
+        padding: 2.75rem 1.5rem;
+    }
+
+    .home-title {
+        margin: 0;
+        font-size: clamp(3.5rem, 6vw, 4.75rem);
+        letter-spacing: 0.08em;
+    }
+
+    #homeScreen .home-score-display,
+    #homeScreen .howto-box {
+        width: min(100%, 27.5rem);
+    }
+
+    #homeScreen .home-play-controls {
+        width: min(100%, 27.5rem);
+    }
+
+    #homeScreen .home-actions {
+        width: 100%;
+    }
+
+    .home-score-display,
+    .last-score-display {
+        min-width: 13.75rem;
+        padding: 0.875rem 1.5rem;
+        border-color: #ffd45e;
+        border-radius: 1rem;
+        background: #fff5cf;
+    }
+
+    .home-actions {
+        gap: 0.625rem;
+    }
+
+    .home-score-display .score,
+    .last-score-display .score {
+        color: #654b00;
+        font-size: 1.375rem;
+    }
+
+    .match-mode {
+        gap: 0.75rem;
+        margin: 0;
+    }
+
+    .match-mode label {
+        padding: 0.75rem 1.125rem;
+        border: 0.125rem solid #f1e6d5;
+        border-radius: 0.75rem;
+        background: #fff;
+        color: #72564d;
+    }
+
+    .match-mode label:has(input:checked) {
+        border-color: #f0a295;
+        background: #fff0e8;
+    }
+
+    #startBtn {
+        border-radius: 0.875rem;
+        background: #df4939;
+        box-shadow: 0 0.3125rem 0 #b82c28, 0 0.5625rem 1rem rgba(120, 56, 42, 0.12);
+        font-weight: 700;
+    }
+
+    #startBtn:hover {
+        background: #c93d31;
+        transform: translateY(-0.125rem);
+    }
+
+    .secondary-btn {
+        margin: 0;
+        border-color: #f0d4a0;
+        background: #fff;
+        color: #d83e32;
+        transition: background 0.2s, border-color 0.2s;
+    }
+
+    .secondary-btn:hover {
+        border-color: #f0a295;
+        background: #fff0e8;
+    }
+
+    .howto-box {
+        margin: 0.625rem auto 0;
+        padding: 1.375rem 1.625rem;
+        border-color: #fff;
+        background: rgba(255, 255, 255, 0.82);
+    }
+
+    .howto-box h2 {
+        font-size: 1.125rem;
+        letter-spacing: 0.04em;
+    }
+
+    .howto-box > .howto-group:nth-of-type(2) {
+        display: none;
+    }
+
+    .howto-box > .howto-group {
+        margin-top: 0.5rem;
+    }
+
+    .howto-box ul {
+        color: #625e78;
+        font-size: 0.875rem;
+        line-height: 1.75;
+    }
+
+    .howto-group h3 {
+        color: #d94a3d;
+        font-size: 0.875rem;
+    }
 }

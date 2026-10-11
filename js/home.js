@@ -10,7 +10,7 @@ document.getElementById("startBtn").addEventListener("click", () => {
 
 // ページ読み込み時にホーム画面だけ表示
 window.onload = () => {
-  document.getElementById("homeScreen").style.display = "block";
+  document.getElementById("homeScreen").style.display = "flex";
   document.querySelector(".match").style.display = "none";
   document.getElementById("mobileControls").style.display = "none";
   document.getElementById("rankingScreen").style.display = "none";
@@ -27,4 +27,3 @@ function showHomeScreen() {
   document.getElementById("startBtn").style.display = "inline-block";
   document.getElementById("showRankingBtn").style.display = "inline-block";
 }
-
