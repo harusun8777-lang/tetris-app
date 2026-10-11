@@ -18,61 +18,39 @@ const mobileControls = {
       return;
     }
 
-    // Left button
-    leftBtn.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      player.pressed.left = true;
-    });
-    leftBtn.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      player.pressed.left = false;
-    });
-    leftBtn.addEventListener('mousedown', () => {
-      player.pressed.left = true;
-    });
-    leftBtn.addEventListener('mouseup', () => {
-      player.pressed.left = false;
-    });
+    const bindHoldButton = (button, direction) => {
+      const release = () => {
+        player.pressed[direction] = false;
+      };
 
-    // Right button
-    rightBtn.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      player.pressed.right = true;
-    });
-    rightBtn.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      player.pressed.right = false;
-    });
-    rightBtn.addEventListener('mousedown', () => {
-      player.pressed.right = true;
-    });
-    rightBtn.addEventListener('mouseup', () => {
-      player.pressed.right = false;
-    });
+      button.addEventListener('pointerdown', (event) => {
+        event.preventDefault();
+        player.pressed[direction] = true;
+        button.setPointerCapture(event.pointerId);
+      });
+      button.addEventListener('pointerup', release);
+      button.addEventListener('pointercancel', release);
+      button.addEventListener('lostpointercapture', release);
+    };
 
-    // Down button
-    downBtn.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      player.pressed.down = true;
-    });
-    downBtn.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      player.pressed.down = false;
-    });
-    downBtn.addEventListener('mousedown', () => {
-      player.pressed.down = true;
-    });
-    downBtn.addEventListener('mouseup', () => {
-      player.pressed.down = false;
-    });
+    bindHoldButton(leftBtn, 'left');
+    bindHoldButton(rightBtn, 'right');
+    bindHoldButton(downBtn, 'down');
 
-    // Rotate button
-    rotateBtn.addEventListener('touchstart', (e) => {
-      e.preventDefault();
+    rotateBtn.addEventListener('pointerdown', (event) => {
+      event.preventDefault();
       tryRotate(player);
     });
-    rotateBtn.addEventListener('click', () => {
-      tryRotate(player);
+
+    const releaseAll = () => {
+      player.pressed.left = false;
+      player.pressed.right = false;
+      player.pressed.down = false;
+    };
+
+    window.addEventListener('blur', releaseAll);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) releaseAll();
     });
   }
 };

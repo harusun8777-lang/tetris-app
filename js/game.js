@@ -348,6 +348,12 @@ function updatePlayer(player, delta) {
 }
 
 function bindControls(player) {
+  const releaseMovementKeys = () => {
+    player.pressed.left = false;
+    player.pressed.right = false;
+    player.pressed.down = false;
+  };
+
   document.addEventListener('keydown', (event) => {
     const key = event.key;
     const lowerKey = key.toLowerCase();
@@ -366,33 +372,12 @@ function bindControls(player) {
     if (key === player.controls.right || lowerKey === player.controls.right) player.pressed.right = false;
     if (key === player.controls.down || lowerKey === player.controls.down) player.pressed.down = false;
   });
+
+  window.addEventListener('blur', releaseMovementKeys);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) releaseMovementKeys();
+  });
 }
-
-document.getElementById("leftBtn").addEventListener("touchstart", () => {
-  players[0].pressed.left = true;
-});
-document.getElementById("leftBtn").addEventListener("touchend", () => {
-  players[0].pressed.left = false;
-});
-
-document.getElementById("rightBtn").addEventListener("touchstart", () => {
-  players[0].pressed.right = true;
-});
-document.getElementById("rightBtn").addEventListener("touchend", () => {
-  players[0].pressed.right = false;
-});
-
-document.getElementById("rotateBtn").addEventListener("touchstart", () => {
-  rotatePiece(players[0]);
-});
-
-document.getElementById("downBtn").addEventListener("touchstart", () => {
-  players[0].pressed.down = true;
-});
-document.getElementById("downBtn").addEventListener("touchend", () => {
-  players[0].pressed.down = false;
-});
-
 
 const players = [
   createPlayer({
