@@ -55,15 +55,19 @@ function createPlayer({ canvasId, scoreId, controls }) {
 
 let gameMode = 1;
 
+function isMobileViewport() {
+  return window.matchMedia('(max-width: 48rem)').matches;
+}
+
 function getActivePlayers() {
   return players.slice(0, gameMode);
 }
 
 function setGameMode(mode) {
-  gameMode = mode;
+  gameMode = isMobileViewport() ? 1 : mode;
   const player2Panel = document.getElementById('player2Panel');
   if (player2Panel) {
-    player2Panel.style.display = mode === 2 ? '' : 'none';
+    player2Panel.style.display = gameMode === 2 ? '' : 'none';
   }
 }
 
@@ -410,21 +414,14 @@ const state = {
 
 function initGameMode() {
   const modeInputs = document.querySelectorAll('input[name="mode"]');
-  
-  // On mobile, disable 2-player mode
-  const isMobile = window.innerWidth <= 768;
   const twoPlayerInput = modeInputs[1];
-  if (isMobile && twoPlayerInput) {
-    twoPlayerInput.disabled = true;
-  }
-  
+
   modeInputs.forEach((input) => {
     input.addEventListener('change', () => {
       if (input.disabled) return;
-      
+
       const selectedMode = parseInt(input.value, 10);
-      if (isMobile && selectedMode === 2) {
-        // Force single player on mobile
+      if (isMobileViewport() && selectedMode === 2) {
         modeInputs[0].checked = true;
         setGameMode(1);
       } else {
@@ -433,8 +430,21 @@ function initGameMode() {
     });
   });
 
-  const selectedMode = document.querySelector('input[name="mode"]:checked');
-  setGameMode(selectedMode ? parseInt(selectedMode.value, 10) : 1);
+  const updateModeAvailability = () => {
+    const isMobile = isMobileViewport();
+    if (twoPlayerInput) {
+      twoPlayerInput.disabled = isMobile;
+      if (isMobile && twoPlayerInput.checked) {
+        modeInputs[0].checked = true;
+      }
+    }
+
+    const selectedMode = document.querySelector('input[name="mode"]:checked');
+    setGameMode(selectedMode ? parseInt(selectedMode.value, 10) : 1);
+  };
+
+  updateModeAvailability();
+  window.addEventListener('resize', updateModeAvailability);
 }
 
 function gameLoop(time = 0) {
