@@ -9,6 +9,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'index.html'));
 });
 
+app.all('/api/scores', require('../api/scores'));
 app.use('/api/score', require('./routes/score'));
 app.use('/api/timeline', require('./routes/timeline'));
 

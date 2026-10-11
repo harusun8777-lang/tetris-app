@@ -117,7 +117,9 @@ function spawnPiece(player) {
   player.current = randomPiece();
   if (collisionAt(player, player.current)) {
     player.isGameOver = true;
-    saveScore(player.score);
+    saveScore(player.score).then((saved) => {
+      if (saved) showTopScores();
+    });
     
     // ランキング画面に前回のスコアを表示
     const lastScoreEl = document.getElementById("lastGameScore");
@@ -444,28 +446,50 @@ players.forEach((player) => {
 initGameMode();
 
 function showTopScores() {
-  const scores = JSON.parse(localStorage.getItem("tetrisScores") || "[]");
   const list = document.getElementById("topScores");
+  if (!list) return;
 
-  list.innerHTML = scores
-    .map((s, i) => `<div>${i + 1}位: ${s}</div>`)
-    .join("");
+  list.textContent = "ランキングを読み込み中...";
+  fetch("/api/scores")
+    .then((response) => {
+      if (!response.ok) throw new Error(`ランキング取得に失敗しました (${response.status})`);
+      return response.json();
+    })
+    .then((scores) => {
+      list.replaceChildren();
+      if (scores.length === 0) {
+        list.textContent = "まだ記録がありません";
+        return;
+      }
+
+      scores.forEach(({ score }, index) => {
+        const item = document.createElement("div");
+        item.textContent = `${index + 1}位: ${score}`;
+        list.appendChild(item);
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      list.textContent = "ランキングを読み込めませんでした。時間をおいて再度お試しください。";
+    });
 }
-function saveScore(score) {
-  // 今までのスコアを読み込む（なければ空配列）
-  const scores = JSON.parse(localStorage.getItem("tetrisScores") || "[]");
-
-  // 新しいスコアを追加
-  scores.push(score);
-
-  // 高い順に並べて上位5件だけ残す
-  scores.sort((a, b) => b - a);
-  const top5 = scores.slice(0, 5);
-
-  // 保存
-  localStorage.setItem("tetrisScores", JSON.stringify(top5));
-  // 前回のスコアとして保存
+async function saveScore(score) {
   localStorage.setItem("lastScore", score);
+
+  try {
+    const response = await fetch("/api/scores", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ score }),
+    });
+    if (!response.ok) throw new Error(`スコアの保存に失敗しました (${response.status})`);
+    return true;
+  } catch (error) {
+    console.error(error);
+    const list = document.getElementById("topScores");
+    if (list) list.textContent = "スコアを保存できませんでした。時間をおいて再度お試しください。";
+    return false;
+  }
 }
 
 function setMobileControlsVisibility(isVisible) {
