@@ -459,33 +459,84 @@ players.forEach((player) => {
 // Initialize game mode selector
 initGameMode();
 
+let topScoresRequest;
+
+function wait(milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+async function fetchTopScores() {
+  const maxAttempts = 3;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    let response;
+    try {
+      response = await fetch("/api/scores", { cache: "no-store" });
+    } catch (error) {
+      if (attempt === maxAttempts - 1) throw error;
+      await wait(300 * (attempt + 1));
+      continue;
+    }
+
+    if (!response.ok) {
+      const error = new Error(`ランキング取得に失敗しました (${response.status})`);
+      const isTemporary = response.status === 408 || response.status === 429 || response.status >= 500;
+      if (!isTemporary || attempt === maxAttempts - 1) throw error;
+      await wait(300 * (attempt + 1));
+      continue;
+    }
+
+    const scores = await response.json();
+    if (!Array.isArray(scores) || scores.some((entry) => !entry || !Number.isSafeInteger(entry.score))) {
+      throw new Error("ランキングAPIから不正なデータが返されました");
+    }
+    return scores;
+  }
+
+  throw new Error("ランキングを読み込めませんでした");
+}
+
 function showTopScores() {
   const list = document.getElementById("topScores");
-  if (!list) return;
+  if (!list) return Promise.resolve();
 
   list.textContent = "ランキングを読み込み中...";
-  fetch("/api/scores")
-    .then((response) => {
-      if (!response.ok) throw new Error(`ランキング取得に失敗しました (${response.status})`);
-      return response.json();
-    })
-    .then((scores) => {
-      list.replaceChildren();
-      if (scores.length === 0) {
-        list.textContent = "まだ記録がありません";
-        return;
-      }
+  if (!topScoresRequest) {
+    topScoresRequest = fetchTopScores()
+      .then((scores) => {
+        list.replaceChildren();
+        if (scores.length === 0) {
+          list.textContent = "まだ記録がありません";
+          return;
+        }
 
-      scores.forEach(({ score }, index) => {
-        const item = document.createElement("div");
-        item.textContent = `${index + 1}位: ${score}`;
-        list.appendChild(item);
+        scores.forEach(({ score }, index) => {
+          const item = document.createElement("div");
+          item.textContent = `${index + 1}位: ${score}`;
+          list.appendChild(item);
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        list.replaceChildren();
+
+        const message = document.createElement("p");
+        message.textContent = "ランキングを読み込めませんでした。通信状況を確認して、もう一度お試しください。";
+        list.appendChild(message);
+
+        const retryButton = document.createElement("button");
+        retryButton.type = "button";
+        retryButton.className = "score-retry-button";
+        retryButton.textContent = "再読み込み";
+        retryButton.addEventListener("click", showTopScores);
+        list.appendChild(retryButton);
+      })
+      .finally(() => {
+        topScoresRequest = undefined;
       });
-    })
-    .catch((error) => {
-      console.error(error);
-      list.textContent = "ランキングを読み込めませんでした。時間をおいて再度お試しください。";
-    });
+  }
+
+  return topScoresRequest;
 }
 async function saveScore(score) {
   localStorage.setItem("lastScore", score);

@@ -160,6 +160,20 @@ canvas {
   color: #654b00;
 }
 
+.score-retry-button {
+  justify-self: center;
+  padding: 0.625rem 1rem;
+  border: 0.125rem solid #f0d4a0;
+  border-radius: 0.75rem;
+  background: #fff;
+  color: #b82c28;
+  cursor: pointer;
+}
+
+.score-retry-button:hover {
+  background: #fff4dc;
+}
+
 input[disabled] {
   pointer-events: none;
 }
